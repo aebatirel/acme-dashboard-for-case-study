@@ -35,6 +35,9 @@
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Acme Dashboard</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn @click="logout" text>Logout</v-btn>
+      <v-btn text>{{ username }}</v-btn>
     </v-app-bar>
     <v-main>
       <router-view></router-view>
@@ -43,11 +46,26 @@
 </template>
 
 <script>
+import keycloak from './keycloak';
+
 export default {
   data() {
     return {
-      drawer: false
+      drawer: false,
+      group: null,
+      nestedGroup: null,
+      username: ''
     };
+  },
+  mounted() {
+    if (keycloak.authenticated) {
+      this.username = keycloak.tokenParsed.preferred_username;
+    }
+  },
+  methods: {
+    logout() {
+      keycloak.logout();
+    }
   }
 };
 </script>
